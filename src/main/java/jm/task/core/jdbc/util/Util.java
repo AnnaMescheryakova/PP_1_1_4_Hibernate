@@ -13,9 +13,26 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class Util {
+
+    private static volatile Util INSTANCE;
     private static final String URL = "jdbc:mysql://localhost:3306/my_db?useSSL=false&serverTimezone=UTC";
     private static final String USERNAME = "user";
     private static final String PASSWORD = "user";
+    private static SessionFactory sessionFactory;
+
+    private Util() {
+    }
+
+    public static Util getInstance() {
+        if (INSTANCE == null) {
+            synchronized (Util.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new Util();
+                }
+            }
+        }
+        return INSTANCE;
+    }
 
     public static Connection getConnection() {
         Connection connection = null;
@@ -28,7 +45,8 @@ public class Util {
         return connection;
     }
 
-    private static SessionFactory sessionFactory;
+
+
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {
